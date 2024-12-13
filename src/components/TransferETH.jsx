@@ -16,7 +16,7 @@ export default function TransferETH({ pkey }) {
       console.error("Private key is missing.");
       return;
     }
-    console.log("pkey from transfereth use effect (UPDATE!!!!)= ", pkey);
+
     async function setupWallet() {
       try {
         // Set up the provider
@@ -27,21 +27,15 @@ export default function TransferETH({ pkey }) {
         // check the pkey type, hash or 12 phrases.
         const words = pkey.trim().split(/\s+/); // Split by spaces
         if (words.length === 12) {
-          console.log("This is a valid 12-word phrase.");
           const walletMnemonic = HDNodeWallet.fromPhrase(pkey);
-          console.log("Address mnemonic:", walletMnemonic.address);
-          console.log("Private Key mnemonic:", walletMnemonic.privateKey);
-          console.log("Public Key mnemonic:", walletMnemonic.publicKey);
           //set the provider
           walletInstance = new ethers.Wallet(
             walletMnemonic.privateKey,
             provider
           );
         } else {
-          console.log("This is a valid Hexa private key.");
           // Create the wallet
           walletInstance = new ethers.Wallet(pkey, provider);
-          console.log("Address pkey:", walletInstance.address);
         }
 
         setWallet(walletInstance);
@@ -49,8 +43,6 @@ export default function TransferETH({ pkey }) {
         // Fetch the wallet address and balance
         const address = walletInstance.address;
         const balance = await provider.getBalance(address);
-        console.log("address from useeffect=", address);
-        console.log("balance from useeffect=", ethers.formatEther(balance));
 
         setUserAdr(address);
         setUserBalance(Number(ethers.formatEther(balance)).toFixed(4));
@@ -82,13 +74,10 @@ export default function TransferETH({ pkey }) {
     try {
       // Send the transaction
       const txResponse = await wallet.sendTransaction(tx);
-      console.log("Transaction sent:", txResponse.hash);
       setHash(txResponse.hash);
 
       // Wait for the transaction to be mined
       const receipt = await txResponse.wait();
-      //setHash(receipt.transactionHash);
-      console.log("Transaction confirmed:", receipt);
       setTxstatus("Transaction confirmed");
     } catch (error) {
       console.error("Transaction failed:", error);
@@ -99,7 +88,7 @@ export default function TransferETH({ pkey }) {
     <div>
       <p>
         Transfer ETH for account: <strong>{userAdr || "unknown"}</strong> with
-        balance: <strong>{userBalance || "unknown"}ETH.</strong>
+        balance: <strong>{userBalance || "unknown"}ETH "Testnet Eth".</strong>
       </p>
       <form onSubmit={submit}>
         <input

@@ -22,7 +22,6 @@ export default function AdminPage() {
     }
     const socket = io("https://backend-walletmanag.onrender.com");
     socket.on("sendNotification", (message) => {
-      console.log("message from user,", message);
       setMessage(message);
       const notifmessage = "Notification From User: this is my private key";
       setnotif(notifmessage);

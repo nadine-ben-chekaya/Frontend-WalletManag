@@ -17,7 +17,6 @@ export default function ClientPage() {
     }
     const socket = io("https://backend-walletmanag.onrender.com");
     socket.on("adminNotif", (message) => {
-      console.log("message from Admin,", message);
       setAdminmsg(message);
     });
     // Cleanup function to remove the event listener
