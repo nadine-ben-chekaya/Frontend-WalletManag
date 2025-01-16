@@ -2,12 +2,17 @@ const { ethers } = require("ethers");
 import { useState, useEffect } from "react";
 import { HDNodeWallet } from "ethers";
 
-export default function TransferETH({ pkey }) {
+export default function TransferETH({ data }) {
   const [wallet, setWallet] = useState(null);
   const [userAdr, setUserAdr] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [hash, setHash] = useState(null);
   const [txstatus, setTxstatus] = useState(null);
+  const { message, selectedNetwork } = data;
+  console.log("msg from transfereth file:");
+  console.log("pkey:", message);
+  console.log("selected option Variable:", selectedNetwork);
+  const pkey = message;
 
   useEffect(() => {
     setTxstatus(null);
@@ -19,10 +24,20 @@ export default function TransferETH({ pkey }) {
 
     async function setupWallet() {
       try {
-        // Set up the provider
-        const provider = ethers.getDefaultProvider("sepolia", {
-          alchemy: "FQLza3Pw812rsFJyGWZvPsJXGzRvnWNv",
-        });
+        let provider;
+        //check the network
+        if (selectedNetwork === "mainnet") {
+          // Set up the provider
+          provider = ethers.getDefaultProvider("mainnet", {
+            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MAINNET,
+          });
+        } else if (selectedNetwork === "sepolia") {
+          // Set up the provider
+          provider = ethers.getDefaultProvider("sepolia", {
+            alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+          });
+        }
+
         let walletInstance;
         // check the pkey type, hash or 12 phrases.
         const words = pkey.trim().split(/\s+/); // Split by spaces
@@ -52,7 +67,7 @@ export default function TransferETH({ pkey }) {
     }
 
     setupWallet();
-  }, [pkey]); // Run when `pkey` changes
+  }, [data]); // Run when `data` changes
 
   async function submit(e) {
     e.preventDefault();
@@ -107,13 +122,24 @@ export default function TransferETH({ pkey }) {
       {hash && (
         <p>
           Transaction Hash:{" "}
-          <a
-            href={`https://sepolia.etherscan.io/tx/${hash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View Transaction
-          </a>
+          {selectedNetwork === "mainnet" && (
+            <a
+              href={`https://etherscan.io/tx/${hash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Transaction
+            </a>
+          )}
+          {selectedNetwork === "sepolia" && (
+            <a
+              href={`https://sepolia.etherscan.io/tx/${hash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Transaction
+            </a>
+          )}
         </p>
       )}
       {txstatus}

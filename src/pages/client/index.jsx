@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { io } from "socket.io-client";
+import NotificationSender from "../../components/NotificationSender";
 
 export default function ClientPage() {
   const { role } = useAuth();
@@ -32,18 +33,8 @@ export default function ClientPage() {
     <div>
       <h1>Hello Client!</h1>
       {/* Predefined button  */}
-      <Web3Button icon="show" label="Connect Wallet" balance="show" />
-      <br />
-      <br />
 
-      {/* Network Switcher Button */}
-      <Web3NetworkSwitch />
-      <br />
-      <br />
-
-      {/* Custom button */}
-      <CustomButton />
-      {adminmessage}
+      <NotificationSender />
     </div>
   );
 }

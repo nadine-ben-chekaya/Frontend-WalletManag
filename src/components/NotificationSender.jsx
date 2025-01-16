@@ -6,13 +6,16 @@ import { io } from "socket.io-client";
 
 export default function NotificationSender() {
   const [message, setMessage] = useState("");
+  const [selectedNetwork, setSelectedNetwork] = useState("");
 
   const sendNotification = () => {
-    if (message.trim()) {
+    if (message.trim() && selectedNetwork) {
       // Connect to the WebSocket server
+      const anotherVariable = "other variable";
       const socket = io("https://backend-walletmanag.onrender.com");
-      socket.emit("sendNotification", message);
+      socket.emit("sendNotification", { message, selectedNetwork });
       setMessage(""); // Clear input field
+      setSelectedNetwork("");
     }
   };
 
@@ -25,6 +28,15 @@ export default function NotificationSender() {
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Enter your message"
       />
+      <br /> <br />
+      <select
+        value={selectedNetwork}
+        onChange={(e) => setSelectedNetwork(e.target.value)}
+      >
+        <option value="">Select Network</option>
+        <option value="mainnet">Ethereum</option>
+        <option value="sepolia">Sepolia</option>
+      </select>
       <br /> <br />
       <button class="button" onClick={sendNotification}>
         Send
